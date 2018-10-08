@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+	<!-- handllerMapping의 default -->
+	<context:component-scan base-package="controllers"/>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<!-- viewResolver의 default -->
+		<property name="suffix" value=".jsp"/>
+		<property name="prefix" value="/WEB-INF/views/"/>
+	</bean>
+	
+	<!-- default는 굳이 적지 않아도 된다 -->
+	
+	
+	<bean class="com.google.gson.Gson"/>
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="ds">
+		<property value="oracle.jdbc.driver.OracleDriver" name="driverClassName"/>
+		<property value="jdbc:oracle:thin:@cho.mockingu.com:1521:xe" name="url"/>
+		<property value="dev" name="username"/>
+		<property value="oracle" name="password"/>
+	</bean>
+	
+	<bean  id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" >
+		<property name="dataSource" ref="ds"/>
+		<property value="/WEB-INF/mappers/*.xml" name="mapperLocations"/>
+	</bean>
+	
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<context:component-scan base-package="models"/>
+</beans>
